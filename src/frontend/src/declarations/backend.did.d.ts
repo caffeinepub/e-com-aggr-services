@@ -10,6 +10,10 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface CreateOrderRequest {
+  'clientId' : string,
+  'items' : Array<OrderItem>,
+}
 export interface Order {
   'total' : Price,
   'clientId' : string,
@@ -36,15 +40,15 @@ export interface Service {
   'rawPayload' : string,
 }
 export interface _SERVICE {
-  'createOrder' : ActorMethod<[Order], string>,
+  'createOrder' : ActorMethod<[CreateOrderRequest], string>,
   'deleteOrder' : ActorMethod<[string], undefined>,
   'echoText' : ActorMethod<[string], string>,
-  'generateClientId' : ActorMethod<[string, string], string>,
   'getAllProducts' : ActorMethod<[], Array<Product>>,
   'getAllServices' : ActorMethod<[], Array<Service>>,
   'getArbitrages' : ActorMethod<[], Array<[string, Price, string, Price]>>,
   'getContactInfo' : ActorMethod<[], [string, string]>,
   'getOrder' : ActorMethod<[string], Order>,
+  'getOrderTrace' : ActorMethod<[string], string>,
   'getOrdersByClient' : ActorMethod<[string], Array<Order>>,
   'getProductsByCurrency' : ActorMethod<[string], Array<Product>>,
   'getProductsByMinPrice' : ActorMethod<[number], Array<Product>>,

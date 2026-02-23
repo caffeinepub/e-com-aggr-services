@@ -19,6 +19,10 @@ export interface Service {
     price: Price;
     rawPayload: string;
 }
+export interface CreateOrderRequest {
+    clientId: string;
+    items: Array<OrderItem>;
+}
 export interface Order {
     total: Price;
     clientId: string;
@@ -36,15 +40,15 @@ export interface Price {
     amount: number;
 }
 export interface backendInterface {
-    createOrder(order: Order): Promise<string>;
+    createOrder(request: CreateOrderRequest): Promise<string>;
     deleteOrder(id: string): Promise<void>;
     echoText(text: string): Promise<string>;
-    generateClientId(mobile10: string, unixTimestamp: string): Promise<string>;
     getAllProducts(): Promise<Array<Product>>;
     getAllServices(): Promise<Array<Service>>;
     getArbitrages(): Promise<Array<[string, Price, string, Price]>>;
     getContactInfo(): Promise<[string, string]>;
     getOrder(id: string): Promise<Order>;
+    getOrderTrace(orderId: string): Promise<string>;
     getOrdersByClient(clientId: string): Promise<Array<Order>>;
     getProductsByCurrency(currency: string): Promise<Array<Product>>;
     getProductsByMinPrice(minPrice: number): Promise<Array<Product>>;

@@ -17,8 +17,7 @@ export const OrderItem = IDL.Record({
   'quantity' : IDL.Nat,
   'price' : Price,
 });
-export const Order = IDL.Record({
-  'total' : Price,
+export const CreateOrderRequest = IDL.Record({
   'clientId' : IDL.Text,
   'items' : IDL.Vec(OrderItem),
 });
@@ -36,12 +35,16 @@ export const Service = IDL.Record({
   'price' : Price,
   'rawPayload' : IDL.Text,
 });
+export const Order = IDL.Record({
+  'total' : Price,
+  'clientId' : IDL.Text,
+  'items' : IDL.Vec(OrderItem),
+});
 
 export const idlService = IDL.Service({
-  'createOrder' : IDL.Func([Order], [IDL.Text], []),
+  'createOrder' : IDL.Func([CreateOrderRequest], [IDL.Text], []),
   'deleteOrder' : IDL.Func([IDL.Text], [], []),
   'echoText' : IDL.Func([IDL.Text], [IDL.Text], []),
-  'generateClientId' : IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
   'getAllProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
   'getAllServices' : IDL.Func([], [IDL.Vec(Service)], ['query']),
   'getArbitrages' : IDL.Func(
@@ -51,6 +54,7 @@ export const idlService = IDL.Service({
     ),
   'getContactInfo' : IDL.Func([], [IDL.Text, IDL.Text], []),
   'getOrder' : IDL.Func([IDL.Text], [Order], ['query']),
+  'getOrderTrace' : IDL.Func([IDL.Text], [IDL.Text], ['query']),
   'getOrdersByClient' : IDL.Func([IDL.Text], [IDL.Vec(Order)], ['query']),
   'getProductsByCurrency' : IDL.Func([IDL.Text], [IDL.Vec(Product)], ['query']),
   'getProductsByMinPrice' : IDL.Func(
@@ -86,8 +90,7 @@ export const idlFactory = ({ IDL }) => {
     'quantity' : IDL.Nat,
     'price' : Price,
   });
-  const Order = IDL.Record({
-    'total' : Price,
+  const CreateOrderRequest = IDL.Record({
     'clientId' : IDL.Text,
     'items' : IDL.Vec(OrderItem),
   });
@@ -105,12 +108,16 @@ export const idlFactory = ({ IDL }) => {
     'price' : Price,
     'rawPayload' : IDL.Text,
   });
+  const Order = IDL.Record({
+    'total' : Price,
+    'clientId' : IDL.Text,
+    'items' : IDL.Vec(OrderItem),
+  });
   
   return IDL.Service({
-    'createOrder' : IDL.Func([Order], [IDL.Text], []),
+    'createOrder' : IDL.Func([CreateOrderRequest], [IDL.Text], []),
     'deleteOrder' : IDL.Func([IDL.Text], [], []),
     'echoText' : IDL.Func([IDL.Text], [IDL.Text], []),
-    'generateClientId' : IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
     'getAllProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
     'getAllServices' : IDL.Func([], [IDL.Vec(Service)], ['query']),
     'getArbitrages' : IDL.Func(
@@ -120,6 +127,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getContactInfo' : IDL.Func([], [IDL.Text, IDL.Text], []),
     'getOrder' : IDL.Func([IDL.Text], [Order], ['query']),
+    'getOrderTrace' : IDL.Func([IDL.Text], [IDL.Text], ['query']),
     'getOrdersByClient' : IDL.Func([IDL.Text], [IDL.Vec(Order)], ['query']),
     'getProductsByCurrency' : IDL.Func(
         [IDL.Text],

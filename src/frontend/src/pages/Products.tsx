@@ -3,12 +3,21 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ExternalLink, Package } from 'lucide-react';
+import { ExternalLink, Package, ShoppingCart, Hash } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useActor } from '@/hooks/useActor';
+import { useOrderTrace } from '@/hooks/useQueries';
+import { useState } from 'react';
+import type { CreateOrderRequest } from '@/backend';
+import { get_arbitrage } from '@/lib/arbitrage';
 
 export default function Products() {
   const { actor, isFetching: actorLoading } = useActor();
+  const [orderStatus, setOrderStatus] = useState<{ type: 'success' | 'error'; message: string; orderId?: string } | null>(null);
+  const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
+
+  // Fetch order trace for the most recent order
+  const { data: last6Hash, isLoading: traceLoading } = useOrderTrace(orderStatus?.orderId || null);
 
   const { data: products, isLoading, error } = useQuery({
     queryKey: ['products'],
@@ -26,6 +35,77 @@ export default function Products() {
       GBP: '£',
     };
     return `${symbols[currency] || currency} ${amount.toFixed(2)}`;
+  };
+
+  const handleMockOrder = async (productId: string, price: { amount: number; currency: string }) => {
+    if (!actor) return;
+
+    // Read clientId from localStorage
+    const clientId = localStorage.getItem('clientId');
+    
+    if (!clientId) {
+      setOrderStatus({
+        type: 'error',
+        message: 'Please complete onboarding first to get your Client ID.',
+      });
+      setTimeout(() => {
+        setOrderStatus(null);
+      }, 5000);
+      return;
+    }
+
+    setLoadingProductId(productId);
+    setOrderStatus(null);
+
+    try {
+      const orderRequest: CreateOrderRequest = {
+        clientId,
+        items: [
+          {
+            itemId: productId,
+            quantity: BigInt(1),
+            price: {
+              amount: price.amount,
+              currency: price.currency,
+            },
+          },
+        ],
+      };
+
+      // Compute total (in this case, just the single item price)
+      const total = price.amount;
+      
+      // Calculate mock wholesale price (80% of retail)
+      const mockWholesalePrice = total * 0.8;
+      
+      // Call arbitrage computation (logs to console, no real payout)
+      get_arbitrage(total, mockWholesalePrice);
+
+      const orderId = await actor.createOrder(orderRequest);
+      setOrderStatus({
+        type: 'success',
+        message: `Order created successfully! Order ID: ${orderId}`,
+        orderId,
+      });
+
+      // Clear success message after 10 seconds to allow viewing the hash
+      setTimeout(() => {
+        setOrderStatus(null);
+      }, 10000);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setOrderStatus({
+        type: 'error',
+        message: `Failed to create order: ${errorMessage}`,
+      });
+
+      // Clear error message after 5 seconds
+      setTimeout(() => {
+        setOrderStatus(null);
+      }, 5000);
+    } finally {
+      setLoadingProductId(null);
+    }
   };
 
   if (isLoading || actorLoading) {
@@ -76,6 +156,31 @@ export default function Products() {
         </p>
       </div>
 
+      {orderStatus && (
+        <Alert variant={orderStatus.type === 'error' ? 'destructive' : 'default'}>
+          <AlertDescription className={orderStatus.type === 'success' ? 'text-green-600 dark:text-green-400' : ''}>
+            <div className="space-y-2">
+              <p>{orderStatus.message}</p>
+              {orderStatus.type === 'success' && orderStatus.orderId && (
+                <div className="flex items-center gap-2 mt-2 p-3 bg-muted/50 rounded-md">
+                  <Hash className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium">Transaction Hash (last 6):</span>
+                  {traceLoading ? (
+                    <Skeleton className="h-5 w-16" />
+                  ) : last6Hash ? (
+                    <code className="text-sm font-mono bg-background px-2 py-1 rounded border">
+                      {last6Hash}
+                    </code>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">Loading...</span>
+                  )}
+                </div>
+              )}
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+
       {products && products.length === 0 ? (
         <Alert>
           <AlertDescription>No products available at the moment.</AlertDescription>
@@ -108,9 +213,19 @@ export default function Products() {
                   </span>
                   <Badge variant="outline">{product.price.currency}</Badge>
                 </div>
-                <Button className="w-full" variant="outline">
-                  View Details
-                </Button>
+                <div className="flex gap-2">
+                  <Button className="flex-1" variant="outline">
+                    View Details
+                  </Button>
+                  <Button
+                    className="flex-1"
+                    onClick={() => handleMockOrder(product.id, product.price)}
+                    disabled={loadingProductId === product.id}
+                  >
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    {loadingProductId === product.id ? 'Ordering...' : 'Mock Order'}
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           ))}

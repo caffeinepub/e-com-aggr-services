@@ -4,6 +4,10 @@ import Map "mo:core/Map";
 import Float "mo:core/Float";
 import Order "mo:core/Order";
 import Runtime "mo:core/Runtime";
+import Time "mo:core/Time";
+import Iter "mo:core/Iter";
+
+
 
 actor {
   // Data Models
@@ -40,6 +44,42 @@ actor {
     total : Price;
   };
 
+  // New QrcClient type
+  type QrcClient = {
+    clientId : Text;
+    mobile10 : Text;
+    createdAt : Time.Time;
+  };
+
+  type CreateOrderRequest = {
+    clientId : Text;
+    items : [OrderItem];
+  };
+
+  type OrderTrace = {
+    orderId : Text;
+    txHash : Text;
+    last6 : Text;
+    createdAt : Int;
+  };
+
+  let qrcClients = Map.empty<Text, QrcClient>();
+  let orders = Map.empty<Text, Order>();
+  let orderTraces = Map.empty<Text, OrderTrace>();
+
+  // Comparison functions for sorting Price and Products
+  module Price {
+    public func compareByAmount(p1 : Price, p2 : Price) : Order.Order {
+      Float.compare(p1.amount, p2.amount);
+    };
+  };
+
+  module Product {
+    public func compareByPrice(p1 : Product, p2 : Product) : Order.Order {
+      Price.compareByAmount(p1.price, p2.price);
+    };
+  };
+
   // Sample Data (would be replaced by real scraping in future stages)
   let products = List.fromArray<Product>([
     { id = "p1"; title = "Product 1"; sourceUrl = "https://shop1.caffeine.xyz"; price = { amount = 299.99; currency = "USD" }; rawPayload = "..." },
@@ -56,21 +96,6 @@ actor {
     { id = "s4"; title = "Service 4"; sourceUrl = "https://marketing.caffeine.xyz"; price = { amount = 59.99; currency = "USD" }; rawPayload = "..." },
     { id = "s5"; title = "Service 5"; sourceUrl = "https://support.caffeine.xyz"; price = { amount = 49.99; currency = "USD" }; rawPayload = "..." },
   ]);
-
-  let orders = Map.empty<Text, Order>();
-
-  // Comparison functions for sorting Price and Products
-  module Price {
-    public func compareByAmount(p1 : Price, p2 : Price) : Order.Order {
-      Float.compare(p1.amount, p2.amount);
-    };
-  };
-
-  module Product {
-    public func compareByPrice(p1 : Product, p2 : Product) : Order.Order {
-      Price.compareByAmount(p1.price, p2.price);
-    };
-  };
 
   // Scraper Functions (mocked)
   public query ({ caller }) func getAllProducts() : async [Product] {
@@ -104,10 +129,42 @@ actor {
   };
 
   // Order Management
-  public shared ({ caller }) func createOrder(order : Order) : async Text {
-    let orderId = "order-" # order.clientId # "-" # order.items.size().toText();
-    orders.add(orderId, order);
-    orderId;
+  public shared ({ caller }) func createOrder(request : CreateOrderRequest) : async Text {
+    // Validate clientId
+    switch (qrcClients.get(request.clientId)) {
+      case (null) { Runtime.trap("Unknown or missing clientId") };
+      case (?_client) {
+        let orderId = "order-" # request.clientId # "-" # request.items.size().toText();
+        let total : Price = { amount = 0; currency = "USD" };
+
+        let order : Order = {
+          clientId = request.clientId;
+          items = request.items;
+          total;
+        };
+
+        orders.add(orderId, order);
+
+        let txHash = "default_tx_hash";
+        let last6 = if (txHash.size() >= 6) {
+          let start = if (txHash.size() > 6) { txHash.size() - 6 } else { 0 };
+          Text.fromIter(txHash.chars().drop(start));
+        } else {
+          txHash;
+        };
+
+        let orderTrace : OrderTrace = {
+          orderId;
+          txHash;
+          last6;
+          createdAt = Time.now();
+        };
+
+        orderTraces.add(orderId, orderTrace);
+
+        orderId;
+      };
+    };
   };
 
   public query ({ caller }) func getOrder(id : Text) : async Order {
@@ -118,7 +175,8 @@ actor {
   };
 
   public query ({ caller }) func getOrdersByClient(clientId : Text) : async [Order] {
-    let ordersArray = orders.values().toArray();
+    let ordersIter = orders.values();
+    let ordersArray = ordersIter.toArray();
     let filteredOrders = ordersArray.filter(
       func(order) { order.clientId == clientId }
     );
@@ -141,10 +199,17 @@ actor {
     };
   };
 
+  public query ({ caller }) func getOrderTrace(orderId : Text) : async Text {
+    switch (orderTraces.get(orderId)) {
+      case (null) { Runtime.trap("Order trace not found") };
+      case (?trace) { trace.last6 };
+    };
+  };
+
   // Contact Page
   public shared ({ caller }) func getContactInfo() : async (Text, Text) {
     // Return contact information and iframe URL for e-contract-lwf.caffeine.xyz
-    ("For business inquiries, contact support@caffeine.xyz. For jobs and employment, visit careers.caffeine.xyz or email jobs@caffeine.xyz. For press, email press@caffeine.xyz or press@dscvr.one. For partnerships and platform integrations, contact admin@caffeine.xyz", "https://e-contract-lwf.caffeine.xyz");
+    ("For business inquiries, contact support@caffeine.xyz. For jobs and employment, visit careers.caffeine.xyz or email jobs@caffeine.xyz. For press, email press@dscvr.one. For partnerships and platform integrations, contact admin@caffeine.xyz", "https://e-contract-lwf.caffeine.xyz");
   };
 
   // Sitemap Generation
@@ -176,12 +241,6 @@ actor {
       ("/external", 5, "Global"),
       ("/user", 5, "Global"),
     ];
-  };
-
-  // QRC Onboarding (stub)
-  public shared ({ caller }) func generateClientId(mobile10 : Text, unixTimestamp : Text) : async Text {
-    let clientId = mobile10 # "-" # unixTimestamp;
-    clientId;
   };
 
   public query ({ caller }) func getArbitrages() : async [(Text, Price, Text, Price)] {

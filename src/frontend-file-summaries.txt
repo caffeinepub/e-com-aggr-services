@@ -2,12 +2,13 @@
   "frontend/src/App.tsx": "Main application component with TanStack Router configuration for six routes (home, products, services, contact, sitemap, onboarding) using Layout wrapper.",
   "frontend/src/components/Layout.tsx": "Application layout component with sticky header navigation, e-Com Aggr. Services branding, route links with icons, and footer with caffeine.ai attribution.",
   "frontend/src/pages/Home.tsx": "Home page with hero section, feature cards showcasing platform capabilities (scraping, arbitrage, Merkle tracing), development roadmap stages, and CTA for registration.",
-  "frontend/src/pages/Products.tsx": "Products listing page that fetches and displays all products from backend with price formatting, source URLs, loading states, and error handling.",
+  "frontend/src/pages/Products.tsx": "Products listing page with mock order functionality that computes arbitrage (total vs 80% wholesale price) via get_arbitrage before creating orders, displays transaction hash (last 6 characters) after successful order creation.",
   "frontend/src/pages/Services.tsx": "Services listing page that fetches and displays all services from backend with price formatting, source URLs, loading states, and error handling.",
   "frontend/src/pages/Contact.tsx": "Contact page displaying version-controlled contact information from backend and iframe placeholder for e-contract-lwf.caffeine.xyz with Stage 2 CORS TODO.",
   "frontend/src/pages/Sitemap.tsx": "Sitemap page displaying all application routes grouped by role (Owner, Admin, Client, Global) with priority levels and access badges in organized tables.",
-  "frontend/src/pages/Onboarding.tsx": "QRC onboarding page with mobile number input form, client ID generation (unixTimestamp + mobile10), QR code placeholder with Stage 2 TODOs for implementation.",
-  "frontend/src/lib/arbitrage.ts": "Stage 2 stubbed arbitrage engine with set_arbitrage and get_arbitrage functions including correct signatures, dummy wallet calls, and comprehensive Stage 3 TODOs for Merkle tracing, real scraping, and leaderboard integration.",
+  "frontend/src/pages/Onboarding.tsx": "QRC onboarding page with mobile number input form that generates clientId (unixTimestamp + mobile10), displays QR code via external API, stores clientId in localStorage, and shows copy-to-clipboard functionality with informational cards.",
+  "frontend/src/lib/arbitrage.ts": "Minimal arbitrage helper module with set_arbitrage and get_arbitrage functions that compute p3 = p1 - p2 and log results to console, with TODO comments for future payout and Merkle-root integration.",
   "frontend/src/index.css": "Global styles with OKLCH color system featuring professional e-commerce palette (deep teal primary, warm gray secondary, vibrant orange accent) for both light and dark modes.",
-  "frontend/tailwind.config.js": "Tailwind configuration with custom font families (Inter, JetBrains Mono), extended color tokens, custom shadows (soft, glow), and fade-in animation for polished UI."
+  "frontend/tailwind.config.js": "Tailwind configuration with custom font families (Inter, JetBrains Mono), extended color tokens, custom shadows (soft, glow), and fade-in animation for polished UI.",
+  "frontend/src/hooks/useQueries.ts": "React Query hook for fetching order trace data (last6 hash) from backend using the getOrderTrace function with proper loading states and error handling."
 }

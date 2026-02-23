@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 3,
+  "projectStateVersion": 15,
   "summary": "E-commerce aggregator platform (e-Com Aggr. Services) with product/service listing, mock scraper, order API, contact page with iframe, and sitemap generation. Staged implementation: Stage 1 complete (routes, models, mock data), Stage 2 stubbed (QRC onboarding, arbitrage functions), Stage 3 TODO (real scraping, Merkle tracing, leaderboard integration).",
   "architectural_notes": [
     "Staged implementation: Stage 1 (full code), Stage 2 (stubs/pseudo-code), Stage 3 (TODOs)",
@@ -8,8 +8,11 @@
     "Order API stores basic order data without Merkle tracing or arbitrage execution yet",
     "Contact page iframe and CORS checks are stubbed for Stage 1",
     "Sitemap driven by pages[] array with role-based access metadata",
-    "QRC onboarding and arbitrage functions stubbed with correct signatures for Stage 2",
-    "Modular architecture: Product/Service models, order API, scraper function, arbitrage engine"
+    "Modular architecture: Product/Service models, order API, scraper function, arbitrage engine",
+    "QRC onboarding API validates 10-digit mobile, generates clientId = unixTimestamp + mobile10, stores in Clients collection",
+    "POST /api/orders validates clientId against Clients collection before order creation",
+    "Minimal Merkle Root scaffold: OrderTrace stores per-order SHA-256 hash and last6 chars without full Merkle tree or payout logic",
+    "Minimal arbitrage module: set_arbitrage(p1, p2) computes p3=p1-p2, get_arbitrage logs values with TODO for future payout + Merkle-root integration"
   ],
   "known_issues": [],
   "isFixRequest": false,
@@ -59,6 +62,78 @@
       "title": "Create stubbed QRC onboarding flow function that generates clientId from unixTimestamp + mobile10 with QR code generation placeholder and session storage logic (Stage 2 stub with TODO comments)",
       "reqIds": [
         "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-onboarding-page-with-a-simple-form-containing-one-input-field-for-mobile-number-and-a-submit-button-that-calls-post-api-onboarding-qrc-with-the-entered-mobile10-value",
+      "title": "Build /onboarding page with a simple form containing one input field for mobile number and a submit button that calls POST /api/onboarding/qrc with the entered mobile10 value",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-on-successful-api-response-display-the-generated-qr-code-image-the-clientid-as-plain-text-and-a-note-stating-this-client-id-is-required-for-placing-orders-on-the-onboarding-page",
+      "title": "On successful API response, display the generated QR code image, the clientId as plain text, and a note stating \"This Client ID is required for placing orders.\" on the /onboarding page",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-store-the-generated-clientid-in-browser-session-storage-or-local-storage-after-successful-onboarding-for-later-use-in-order-flows",
+      "title": "Store the generated clientId in browser session storage or local storage after successful onboarding for later use in order flows",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-on-the-products-page-frontend-src-pages-products-tsx-add-a-mock-order-button-to-each-product-card-that-sends-a-post-request-to-api-orders-with-payload-items-productid-product-id-quantity-1-when-clicked",
+      "title": "On the /products page (frontend/src/pages/Products.tsx), add a 'Mock Order' button to each product card that sends a POST request to /api/orders with payload { items: [{ productId: <product.id>, quantity: 1 }] } when clicked",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-a-success-message-toast-or-inline-text-when-the-post-api-orders-request-succeeds-and-display-an-error-message-when-the-request-fails",
+      "title": "Display a success message (toast or inline text) when the POST /api/orders request succeeds, and display an error message when the request fails",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-mock-order-button-on-products-page-to-read-clientid-from-browser-storage-localstorage-or-sessionstorage-and-include-it-in-the-post-api-orders-request-payload-as-clientid-items-productid-quantity-1",
+      "title": "Update the 'Mock Order' button on /products page to read clientId from browser storage (localStorage or sessionStorage) and include it in the POST /api/orders request payload as { clientId, items: [{ productId, quantity: 1 }] }",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-frontend-src-lib-arbitrage-ts-module-exporting-set-arbitrage-p1-number-p2-number-function-that-computes-p3-p1-p2-and-returns-object-p1-p2-p3",
+      "title": "Create frontend/src/lib/arbitrage.ts module exporting set_arbitrage(p1: number, p2: number) function that computes p3 = p1 - p2 and returns object { p1, p2, p3 }",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-frontend-src-lib-arbitrage-ts-export-get-arbitrage-p1-number-p2-number-function-that-internally-calls-set-arbitrage-logs-the-resulting-p1-p2-p3-object-to-console-and-includes-a-todo-comment-for-future-payout-and-merkle-root-integration",
+      "title": "In frontend/src/lib/arbitrage.ts, export get_arbitrage(p1: number, p2: number) function that internally calls set_arbitrage, logs the resulting { p1, p2, p3 } object to console, and includes a TODO comment for future payout and Merkle-root integration",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-the-existing-order-creation-flow-on-frontend-src-pages-products-tsx-after-computing-the-order-total-call-get-arbitrage-p1-total-p2-mockwholesaleprice-where-mockwholesaleprice-is-calculated-as-80-of-p1-total-0-8",
+      "title": "In the existing order creation flow on frontend/src/pages/Products.tsx, after computing the order total, call get_arbitrage(p1 = total, p2 = mockWholesalePrice) where mockWholesalePrice is calculated as 80% of p1 (total * 0.8)",
+      "reqIds": [
+        "REQ-30"
       ],
       "version": 1
     }
@@ -168,6 +243,146 @@
       "reqIds": [
         "REQ-11"
       ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-23",
+      "summary": "Implement POST /api/onboarding/qrc endpoint that validates mobile10 (exactly 10 digits), generates clientId from unixTimestamp + mobile10, creates QR code, stores in Clients collection, and returns clientId + QR image data",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "Build /onboarding page with mobile number input form that calls QRC API, displays generated QR code and clientId, and stores clientId in browser session/local storage",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-25",
+      "summary": "Create POST /api/onboarding/qrc backend endpoint that accepts JSON payload with mobile10 field (string), validates that mobile10 is exactly 10 digits, and returns HTTP 400 with { error: \"Invalid mobile\" } if validation fails",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-26",
+      "summary": "On successful validation, generate clientId by concatenating current Unix timestamp (as integer string) with the mobile10 value, generate a QR code image containing the clientId, store a Client record with fields clientId, mobile10, and createdAt in a Clients collection, and return JSON response with clientId and qrcImageUrlOrData fields",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-33",
+      "summary": "Add 'Mock Order' button on /products page for each product that sends POST /api/orders with single item and displays success/error message",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-34",
+      "summary": "Update POST /api/orders to require clientId in request body, validate against Clients collection, return 400 error if missing/invalid",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-35",
+      "summary": "Update /products 'Mock Order' button to read clientId from browser storage and include in POST /api/orders payload",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-36",
+      "summary": "Update POST /api/orders backend endpoint to require clientId field in the JSON request body with structure { clientId: string, items: { productId: string, quantity: number }[] }",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-37",
+      "summary": "Validate clientId by looking it up in the existing Clients collection created by the /onboarding QRC flow before creating an order",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-38",
+      "summary": "Return HTTP 400 with JSON body { error: \"Unknown or missing clientId\" } when clientId is missing from the request or not found in the Clients collection",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-39",
+      "summary": "When clientId is valid, create the order exactly as before with the same items processing, same mock total calculation, and same response shape",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-40",
+      "summary": "Add OrderTrace data structure with orderId, txHash, last6, createdAt fields",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-41",
+      "summary": "Implement helper to compute SHA-256 hash of order payload, store txHash and last6=txHash.slice(-6) in OrderTrace on order creation",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-42",
+      "summary": "Expose backend function/endpoint to read last6 for a given orderId",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-43",
+      "summary": "Add OrderTrace data structure to backend/main.mo with fields: orderId (Text), txHash (Text), last6 (Text), and createdAt (Int) representing Unix timestamp",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-44",
+      "summary": "Implement a deterministic hash helper function in backend/main.mo that takes the order payload (clientId and items array), converts it to a canonical string representation, and computes a SHA-256 hash returning it as a hexadecimal string",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-45",
+      "summary": "Update the createOrder function in backend/main.mo to automatically compute txHash for each new order using the hash helper, extract last6 as the last 6 characters of txHash, create an OrderTrace record with the orderId, txHash, last6, and current timestamp, and store it in the orderTraces collection",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-46",
+      "summary": "Expose a backend query function getOrderTrace(orderId: Text) in backend/main.mo that looks up and returns the last6 value for a given orderId, returning null or an error if the orderId is not found in the OrderTrace collection",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-47",
+      "summary": "Create minimal arbitrage helper module (arbitrage.ts) with set_arbitrage(p1, p2) → { p1, p2, p3=p1-p2 } and get_arbitrage(p1, p2) that logs values with TODO for future payout + Merkle-root integration",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-48",
+      "summary": "In order creation flow, call get_arbitrage(p1=total, p2=mockWholesalePrice) where mockWholesalePrice = 80% of p1, compute and log arbitrage values without real payouts or external integrations",
+      "reqIds": [],
       "status": "pending"
     }
   ],

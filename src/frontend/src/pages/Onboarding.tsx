@@ -5,43 +5,53 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { UserPlus, QrCode, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { useMutation } from '@tanstack/react-query';
-import { useActor } from '@/hooks/useActor';
+import { UserPlus, QrCode, AlertCircle, CheckCircle2, Copy } from 'lucide-react';
 
 export default function Onboarding() {
-  const { actor } = useActor();
   const [mobile, setMobile] = useState('');
   const [clientId, setClientId] = useState<string | null>(null);
+  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  const generateClientIdMutation = useMutation({
-    mutationFn: async (mobileNumber: string) => {
-      if (!actor) throw new Error('Actor not initialized');
-      
-      // Validate 10-digit mobile number
-      if (!/^\d{10}$/.test(mobileNumber)) {
-        throw new Error('Mobile number must be exactly 10 digits');
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setIsGenerating(true);
+
+    try {
+      // Validate mobile10 is exactly 10 digits
+      if (!/^\d{10}$/.test(mobile)) {
+        throw new Error('Invalid mobile');
       }
 
-      // Generate unix timestamp
-      const unixTimestamp = Math.floor(Date.now() / 1000).toString();
-      
-      // Call backend to generate clientId
-      const id = await actor.generateClientId(mobileNumber, unixTimestamp);
-      
-      // TODO: Store clientId in sessionStorage for use in order flows (Stage 2)
-      // sessionStorage.setItem('clientId', id);
-      
-      return id;
-    },
-    onSuccess: (id) => {
-      setClientId(id);
-    },
-  });
+      // Generate clientId: unixTimestamp + mobile10
+      const unixTimestamp = Math.floor(Date.now() / 1000);
+      const generatedClientId = String(unixTimestamp) + mobile;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    generateClientIdMutation.mutate(mobile);
+      // Generate QR code URL using a public API
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(generatedClientId)}`;
+
+      // Store clientId in localStorage
+      localStorage.setItem('clientId', generatedClientId);
+
+      // Update state
+      setClientId(generatedClientId);
+      setQrCodeUrl(qrUrl);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate client ID');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleCopyClientId = () => {
+    if (clientId) {
+      navigator.clipboard.writeText(clientId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   return (
@@ -57,13 +67,6 @@ export default function Onboarding() {
       </div>
 
       <div className="max-w-2xl mx-auto space-y-6">
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            <strong>Stage 2 Implementation:</strong> QRC onboarding with clientId = unixTimestamp + mobile10
-          </AlertDescription>
-        </Alert>
-
         <Card>
           <CardHeader>
             <CardTitle>Generate Client ID</CardTitle>
@@ -83,6 +86,7 @@ export default function Onboarding() {
                   onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))}
                   maxLength={10}
                   required
+                  disabled={isGenerating}
                 />
                 <p className="text-xs text-muted-foreground">
                   Your client ID will be generated as: unixTimestamp + mobile10
@@ -92,23 +96,20 @@ export default function Onboarding() {
               <Button
                 type="submit"
                 className="w-full"
-                disabled={mobile.length !== 10 || generateClientIdMutation.isPending}
+                disabled={mobile.length !== 10 || isGenerating}
               >
-                {generateClientIdMutation.isPending ? 'Generating...' : 'Generate Client ID'}
+                {isGenerating ? 'Generating...' : 'Generate Client ID'}
               </Button>
             </form>
 
-            {generateClientIdMutation.isError && (
+            {error && (
               <Alert variant="destructive">
-                <AlertDescription>
-                  {generateClientIdMutation.error instanceof Error
-                    ? generateClientIdMutation.error.message
-                    : 'Failed to generate client ID'}
-                </AlertDescription>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
 
-            {clientId && (
+            {clientId && qrCodeUrl && (
               <div className="space-y-4 pt-4 border-t">
                 <Alert>
                   <CheckCircle2 className="h-4 w-4" />
@@ -120,12 +121,23 @@ export default function Onboarding() {
                 <div className="space-y-2">
                   <Label>Your Client ID</Label>
                   <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="text-sm font-mono px-4 py-2">
+                    <Badge variant="secondary" className="text-sm font-mono px-4 py-2 flex-1 justify-center">
                       {clientId}
                     </Badge>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={handleCopyClientId}
+                      title="Copy Client ID"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
                   </div>
+                  {copied && (
+                    <p className="text-xs text-success">Copied to clipboard!</p>
+                  )}
                   <p className="text-xs text-muted-foreground">
-                    Save this ID for placing orders. TODO: Implement persistent local storage in Stage 2.
+                    This Client ID is required for placing orders.
                   </p>
                 </div>
 
@@ -133,22 +145,20 @@ export default function Onboarding() {
                   <CardHeader>
                     <CardTitle className="text-sm flex items-center gap-2">
                       <QrCode className="h-4 w-4" />
-                      QR Code (Coming Soon)
+                      QR Code
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="aspect-square bg-background rounded-lg border-2 border-dashed flex items-center justify-center">
-                      <div className="text-center space-y-2">
-                        <QrCode className="h-16 w-16 mx-auto text-muted-foreground/50" />
-                        <p className="text-sm text-muted-foreground">
-                          TODO: Integrate QR code generation library
-                          <br />
-                          (e.g., qrcode.react) to display QR code
-                          <br />
-                          for clientId in Stage 2
-                        </p>
-                      </div>
+                    <div className="aspect-square bg-background rounded-lg border-2 flex items-center justify-center p-4">
+                      <img
+                        src={qrCodeUrl}
+                        alt="Client ID QR Code"
+                        className="w-full h-full object-contain"
+                      />
                     </div>
+                    <p className="text-xs text-muted-foreground mt-2 text-center">
+                      Scan this QR code to retrieve your Client ID
+                    </p>
                   </CardContent>
                 </Card>
               </div>
@@ -156,29 +166,29 @@ export default function Onboarding() {
           </CardContent>
         </Card>
 
-        {/* Stage 2 & 3 Information */}
+        {/* Information Cards */}
         <div className="grid md:grid-cols-2 gap-4">
           <Card className="bg-accent/5">
             <CardHeader>
-              <CardTitle className="text-sm">Stage 2: Session Management</CardTitle>
+              <CardTitle className="text-sm">How It Works</CardTitle>
             </CardHeader>
             <CardContent className="text-xs text-muted-foreground space-y-1">
-              <p>• QR code scanning instructions</p>
-              <p>• Persistent local storage strategy</p>
-              <p>• Session management UI</p>
-              <p>• Client authentication flow</p>
+              <p>• Enter your 10-digit mobile number</p>
+              <p>• System generates unique Client ID</p>
+              <p>• QR code created for easy access</p>
+              <p>• ID stored locally for future orders</p>
             </CardContent>
           </Card>
 
           <Card className="bg-muted/30">
             <CardHeader>
-              <CardTitle className="text-sm">Stage 3: Advanced Features</CardTitle>
+              <CardTitle className="text-sm">Next Steps</CardTitle>
             </CardHeader>
             <CardContent className="text-xs text-muted-foreground space-y-1">
-              <p>• Merkle Root order tracing</p>
-              <p>• Transaction hash tracking</p>
-              <p>• Leaderboard integration</p>
-              <p>• Automated payout routing</p>
+              <p>• Save your Client ID securely</p>
+              <p>• Use it when placing orders</p>
+              <p>• Track your order history</p>
+              <p>• Access arbitrage opportunities</p>
             </CardContent>
           </Card>
         </div>

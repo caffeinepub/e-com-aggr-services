@@ -1,0 +1,178 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "E-commerce aggregator platform (e-Com Aggr. Services) with product/service listing, mock scraper, order API, contact page with iframe, and sitemap generation. Staged implementation: Stage 1 complete (routes, models, mock data), Stage 2 stubbed (QRC onboarding, arbitrage functions), Stage 3 TODO (real scraping, Merkle tracing, leaderboard integration).",
+  "architectural_notes": [
+    "Staged implementation: Stage 1 (full code), Stage 2 (stubs/pseudo-code), Stage 3 (TODOs)",
+    "Mock scraper uses hard-coded array instead of real HTTP calls",
+    "Order API stores basic order data without Merkle tracing or arbitrage execution yet",
+    "Contact page iframe and CORS checks are stubbed for Stage 1",
+    "Sitemap driven by pages[] array with role-based access metadata",
+    "QRC onboarding and arbitrage functions stubbed with correct signatures for Stage 2",
+    "Modular architecture: Product/Service models, order API, scraper function, arbitrage engine"
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-create-application-shell-with-routing-for-five-pages-home-contact-sitemap-products-services",
+      "title": "Create application shell with routing for five pages: / (home), /contact, /sitemap, /products, /services",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-products-page-that-fetches-and-displays-all-products-from-the-products-collection-with-id-title-sourceurl-price-and-currency",
+      "title": "Build /products page that fetches and displays all products from the Products collection with id, title, sourceUrl, price, and currency",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-services-page-that-fetches-and-displays-all-services-from-the-services-collection-with-id-title-sourceurl-price-and-currency",
+      "title": "Build /services page that fetches and displays all services from the Services collection with id, title, sourceUrl, price, and currency",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-contact-page-that-reads-version-controlled-contact-information-from-a-backend-config-or-table-and-displays-an-iframe-placeholder-for-e-contract-lwf-caffeine-xyz-with-stubbed-cors-validation",
+      "title": "Implement /contact page that reads version-controlled contact information from a backend config or table and displays an iframe placeholder for e-contract-lwf.caffeine.xyz with stubbed CORS validation",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-sitemap-page-and-sitemap-xml-route-that-dynamically-generates-sitemap-from-a-pages-array-containing-path-priority-and-roleaccess-fields-for-all-application-routes",
+      "title": "Create /sitemap page and sitemap.xml route that dynamically generates sitemap from a pages array containing path, priority, and roleAccess fields for all application routes",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-stubbed-qrc-onboarding-flow-function-that-generates-clientid-from-unixtimestamp-mobile10-with-qr-code-generation-placeholder-and-session-storage-logic-stage-2-stub-with-todo-comments",
+      "title": "Create stubbed QRC onboarding flow function that generates clientId from unixTimestamp + mobile10 with QR code generation placeholder and session storage logic (Stage 2 stub with TODO comments)",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Basic app shell with routes: /, /contact, /sitemap, /products, /services",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Product and Service data models with id, title, sourceUrl, price, currency, rawPayload fields",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Mock scraper function with 5-10 sample products/services to fill Products[] and Services[]",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Simple order model and POST /api/orders endpoint storing clientId, items[], total",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "/contact page with version-controlled config and iframe for e-contract-lwf.caffeine.xyz",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "/sitemap page and sitemap.xml with pages[] array (path, priority, roleAccess)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "QRC onboarding flow (clientId = unixTimestamp + mobile10) with QR generation - Stage 2 stub",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "set_arbitrage(p1, p2) and get_arbitrage(p1, p2) functions - Stage 2 stub",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Real external HTTP scraping - Stage 3 TODO",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Merkle Root + Nonce order tracing with last-6-chars memory - Stage 3 TODO",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Leaderboard integration for dynamic payout routing - Stage 3 TODO",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Define backend data models for Product and Service collections with fields: id (Text), title (Text), sourceUrl (Text), price (Float), currency (Text), rawPayload (Text)",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Implement internal mock scraper function that populates Products[] and Services[] from hard-coded arrays of 5-10 sample items each (no external HTTP calls)",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Create Order data model with fields clientId (Text), items (Array), total (Float) and implement POST /api/orders endpoint that stores orders without Merkle tracing or payout logic",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Implement stubbed arbitrage functions set_arbitrage(p1, p2) and get_arbitrage(p1, p2) with correct signatures, parameter documentation, and dummy wallet call placeholders (Stage 2 stub with TODO comments)",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-22",
+      "summary": "Add TODO comments in backend for Stage 3 features: real external HTTP scraping logic, Merkle Root + Nonce order tracing with last-6-chars memory, and leaderboard integration for dynamic payout routing",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "e-Com Aggr. Services",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

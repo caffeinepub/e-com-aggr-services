@@ -1,0 +1,249 @@
+{
+  "kind": "build_request",
+  "title": "Build e-Com Aggr. Services with staged implementation (Stage 1 complete, Stage 2/3 stubbed)",
+  "projectName": "e-Com Aggr Services",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Create application shell with routing for five pages: / (home), /contact, /sitemap, /products, /services",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "Basic app shell named e-Com Aggr. Services with routes: /, /contact, /sitemap, /products, /services."
+        ]
+      },
+      "acceptanceCriteria": [
+        "All five routes are accessible and render distinct page components",
+        "Navigation between routes works correctly",
+        "Application name e-Com Aggr. Services is displayed in header or title"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Define backend data models for Product and Service collections with fields: id (Text), title (Text), sourceUrl (Text), price (Float), currency (Text), rawPayload (Text)",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "Data models: Product and Service collections with fields: id, title, sourceUrl, price, currency, rawPayload."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Product type exists with all specified fields",
+        "Service type exists with all specified fields",
+        "Collections Products and Services are initialized and can store multiple records"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Implement internal mock scraper function that populates Products[] and Services[] from hard-coded arrays of 5-10 sample items each (no external HTTP calls)",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "Internal mock scraper function that reads from a hard-coded array of 5-10 sample products/services and fills Products[] and Services[]"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Mock scraper function exists and is callable",
+        "Function populates Products collection with 5-10 sample products",
+        "Function populates Services collection with 5-10 sample services",
+        "No external HTTP requests are made",
+        "Sample data includes realistic e-commerce product/service information"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Create Order data model with fields clientId (Text), items (Array), total (Float) and implement POST /api/orders endpoint that stores orders without Merkle tracing or payout logic",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "Simple order model and API: POST /api/orders that just stores an order with clientId, items[], total. No Merkle, no payout yet."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Order type exists with clientId, items array, and total fields",
+        "POST /api/orders endpoint accepts order data and stores it",
+        "Endpoint returns success response with order ID",
+        "No Merkle root calculation or payout processing is implemented"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Build /products page that fetches and displays all products from the Products collection with id, title, sourceUrl, price, and currency",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "routes: /, /contact, /sitemap, /products, /services",
+          "Data models: Product and Service collections"
+        ]
+      },
+      "acceptanceCriteria": [
+        "/products route renders a list of all products",
+        "Each product displays title, price with currency, and source URL",
+        "Products are fetched from backend Products collection",
+        "Page handles loading and error states"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Build /services page that fetches and displays all services from the Services collection with id, title, sourceUrl, price, and currency",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "routes: /, /contact, /sitemap, /products, /services",
+          "Data models: Product and Service collections"
+        ]
+      },
+      "acceptanceCriteria": [
+        "/services route renders a list of all services",
+        "Each service displays title, price with currency, and source URL",
+        "Services are fetched from backend Services collection",
+        "Page handles loading and error states"
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Implement /contact page that reads version-controlled contact information from a backend config or table and displays an iframe placeholder for e-contract-lwf.caffeine.xyz with stubbed CORS validation",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "/contact page with version-controlled contact info read from a config file or table, and an iframe placeholder for e-contract-lwf.caffeine.xyz (you may stub CORS checks)."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend stores version-controlled contact information (email, phone, address, etc.)",
+        "/contact page fetches and displays contact information",
+        "Page includes iframe with src pointing to e-contract-lwf.caffeine.xyz",
+        "CORS validation logic exists as stub/placeholder with TODO comment for real implementation",
+        "Contact info updates are versioned (simple version counter or timestamp)"
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "text": "Create /sitemap page and sitemap.xml route that dynamically generates sitemap from a pages array containing path, priority, and roleAccess fields for all application routes",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "/sitemap page plus sitemap.xml route driven off the existing routes, including a pages[] array with path, priority, roleAccess."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend maintains pages array with entries for /, /contact, /sitemap, /products, /services including path, priority (0.0-1.0), and roleAccess (e.g., public, client, admin)",
+        "/sitemap route renders human-readable page listing all routes with their metadata",
+        "/sitemap.xml route generates valid XML sitemap from pages array",
+        "Sitemap includes lastmod, priority, and changefreq fields",
+        "Pages array is easily extensible for future routes"
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "text": "Create stubbed QRC onboarding flow function that generates clientId from unixTimestamp + mobile10 with QR code generation placeholder and session storage logic (Stage 2 stub with TODO comments)",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "QRC onboarding flow where clientId = unixTimestamp + mobile10, with a generated QR image and storage in session/local state."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend function signature exists: generateClientQRC(mobile10: Text) that validates 10-digit mobile number",
+        "Function logic concatenates current unix timestamp + mobile10 to create clientId",
+        "QR code generation is stubbed with TODO comment referencing future QR library integration",
+        "Frontend stub component exists for onboarding flow with mobile input form",
+        "Session/local storage logic is stubbed to store clientId",
+        "Clear TODO comments mark incomplete Stage 2 implementation"
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "text": "Implement stubbed arbitrage functions set_arbitrage(p1, p2) and get_arbitrage(p1, p2) with correct signatures, parameter documentation, and dummy wallet call placeholders (Stage 2 stub with TODO comments)",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "set_arbitrage(p1, p2) and get_arbitrage(p1, p2) functions with correct signature and comments, but allowed to use dummy wallet calls."
+        ]
+      },
+      "acceptanceCriteria": [
+        "set_arbitrage function exists accepting p1 (retailPrice: Float) and p2 (wholesalePrice: Float)",
+        "Function calculates p3 = p1 - p2 (arbitrageMargin) and logs parameters",
+        "get_arbitrage function exists accepting p1 and p2 parameters",
+        "Function contains TODO comments for real wallet/payout integration",
+        "Dummy return values or mock transaction IDs are used",
+        "Function comments document intended behavior: route p2 to leader, capture p3 as profit"
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "text": "Add TODO comments in backend for Stage 3 features: real external HTTP scraping logic, Merkle Root + Nonce order tracing with last-6-chars memory, and leaderboard integration for dynamic payout routing",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "Real external scraping via HTTP.",
+          "Merkle Root + Nonce order tracing and last-6-chars memory.",
+          "Real leaderboard integration for routing payouts."
+        ]
+      },
+      "acceptanceCriteria": [
+        "TODO comment exists for implementing real HTTP scraping engine to replace mock scraper",
+        "TODO comment exists for Merkle Root + Nonce calculation on order writes",
+        "TODO comment exists for persisting and tracking last 6 characters of transaction hashes",
+        "TODO comment exists for integrating Project Fixtures Leaderboard to resolve payout targets dynamically",
+        "TODO comments reference specific functions/modules where implementation will occur"
+      ]
+    }
+  ],
+  "constraints": [
+    "Stage 1 requirements (REQ-1 through REQ-8) must be fully implemented as working code",
+    "Stage 2 requirements (REQ-9 and REQ-10) must have correct function signatures and stub logic with clear TODO markers",
+    "Stage 3 features (REQ-11) must be documented as TODO comments only, not implemented",
+    "No external HTTP calls for scraping in Stage 1 - use hard-coded sample data only",
+    "Order API must not include Merkle tracing or payout logic in Stage 1",
+    "All backend logic must reside in single main.mo actor file",
+    "Mock scraper must generate 5-10 realistic sample products and 5-10 sample services"
+  ],
+  "nonGoals": [
+    "Real external HTTP scraping implementation (deferred to Stage 3)",
+    "Merkle Root cryptographic tracing (deferred to Stage 3)",
+    "Dynamic leaderboard integration (deferred to Stage 3)",
+    "Real QR code generation library integration (stubbed in Stage 2)",
+    "Real wallet or payout API integration (stubbed in Stage 2)",
+    "CORS validation enforcement (stubbed in Stage 1)",
+    "User authentication beyond clientId (not mentioned in staged requirements)"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

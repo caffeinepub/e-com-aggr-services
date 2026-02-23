@@ -1,0 +1,22 @@
+{
+  "backend/main.mo": "Main Motoko actor defining Product, Service, and Order types with sample data and query functions for filtering/sorting products by price, source, and currency, plus order creation/retrieval.",
+  "feature_evidence.json": "Feature evidence report mapping implemented features (routing, products/services pages, contact, sitemap, onboarding) to source files, components, and test IDs with confidence levels.",
+  "frontend-file-summaries.txt": "JSON object containing one-sentence summaries of all frontend source files including pages, components, routing, styling, and arbitrage logic stubs.",
+  "frontend/index.css": "Tailwind CSS configuration with OKLCH color system defining light and dark mode CSS variables for background, foreground, primary, secondary, accent, and sidebar colors.",
+  "frontend/index.html": "HTML entry point with UTF-8 charset, viewport meta tag, title 'e-Com Aggr. Services', root div, and module script loading main.tsx.",
+  "frontend/src/App.tsx": "TanStack Router setup defining six routes (home, products, services, contact, sitemap, onboarding) with Layout wrapper and RouterProvider configuration.",
+  "frontend/src/components/Layout.tsx": "Application layout with sticky header navigation, logo, route links with icons, active state styling, and footer with caffeine.ai attribution and project description.",
+  "frontend/src/hooks/useActor.ts": "React Query hook managing backend actor creation with Internet Identity authentication, automatic query invalidation on identity changes, and anonymous actor fallback.",
+  "frontend/src/hooks/useInternetIdentity.ts": "React context and hook for Internet Identity authentication providing login/logout functions, identity state, login status tracking, and AuthClient configuration with derivation origin support.",
+  "frontend/src/index.css": "Tailwind CSS configuration with custom CSS variables defining a professional e-commerce color palette for both light and dark modes, including primary (teal), accent (orange), and chart colors.",
+  "frontend/src/lib/arbitrage.ts": "Arbitrage engine stub implementing leaderboard-driven profit extraction logic with set_arbitrage and get_arbitrage functions; includes extensive TODOs for Stage 2/3 implementation of Merkle logging, wallet integration, and external scraping.",
+  "frontend/src/main.tsx": "React application entry point that sets up QueryClient, InternetIdentityProvider, and renders the root App component.",
+  "frontend/src/pages/Contact.tsx": "Contact page component that fetches and displays contact information and an e-contract iframe portal using React Query and the backend actor.",
+  "frontend/src/pages/Home.tsx": "Landing page with hero section, feature cards (unlimited scraping, arbitrage engine, Merkle tracing), and development roadmap showcasing the platform's capabilities.",
+  "frontend/src/pages/Onboarding.tsx": "Client registration page implementing QRC onboarding flow that generates a unique clientId from unix timestamp and 10-digit mobile number.",
+  "frontend/src/pages/Products.tsx": "Products catalog page that fetches and displays aggregated products from multiple e-commerce sources with pricing, source URLs, and external links.",
+  "frontend/src/pages/Services.tsx": "React page component that fetches and displays all services from the backend using React Query, showing service cards with title, price, currency, source URL, and a link to view details. Includes loading skeletons and error handling.",
+  "frontend/src/pages/Sitemap.tsx": "React page component that fetches and displays the application sitemap grouped by role, showing routes with their paths, priorities, and access levels in a table format. Includes loading states, error handling, and an alert about the machine-readable sitemap.xml endpoint.",
+  "frontend/tailwind.config.js": "Tailwind CSS configuration with custom theme extensions including OKLCH color system, custom fonts (Inter, JetBrains Mono), container queries, typography plugin, and custom animations for accordions and fade-in effects.",
+  "project_state.json": "Project state document tracking the e-commerce aggregator platform's staged implementation (Stage 1 complete with routes/models/mock data, Stage 2 stubbed with QRC onboarding, Stage 3 TODO with real scraping). Lists existing features including product/service pages, contact page with iframe, and sitemap generation."
+}

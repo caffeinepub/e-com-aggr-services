@@ -1,0 +1,182 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Frontend Implementation for e-Com Aggr. Services Staged Application",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Create application shell with routing for five pages: home, contact, sitemap, products, and services",
+      "acceptanceCriteria": [
+        "All five routes are accessible and render distinct page components",
+        "Navigation between routes works correctly",
+        "Application name e-Com Aggr. Services is displayed in header or title"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Configure React Router with five routes: / (home), /contact, /sitemap, /products, /services. Set up route components and ensure application name e-Com Aggr. Services appears in the layout."
+        },
+        {
+          "path": "frontend/src/pages/Home.tsx",
+          "operation": "create",
+          "description": "Create home page component with welcome message and application overview for e-Com Aggr. Services."
+        },
+        {
+          "path": "frontend/src/pages/Contact.tsx",
+          "operation": "create",
+          "description": "Create contact page component placeholder that will fetch and display contact information."
+        },
+        {
+          "path": "frontend/src/pages/Sitemap.tsx",
+          "operation": "create",
+          "description": "Create sitemap page component placeholder that will display application routes and metadata."
+        },
+        {
+          "path": "frontend/src/pages/Products.tsx",
+          "operation": "create",
+          "description": "Create products page component placeholder that will fetch and display product listings."
+        },
+        {
+          "path": "frontend/src/pages/Services.tsx",
+          "operation": "create",
+          "description": "Create services page component placeholder that will fetch and display service listings."
+        },
+        {
+          "path": "frontend/src/components/Layout.tsx",
+          "operation": "create",
+          "description": "Create layout component with header displaying e-Com Aggr. Services application name and navigation links to all five routes (Home, Products, Services, Contact, Sitemap). Wrap page content with consistent layout structure."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Build products page that fetches and displays all products from the Products collection with id, title, sourceUrl, price, and currency",
+      "acceptanceCriteria": [
+        "/products route renders a list of all products",
+        "Each product displays title, price with currency, and source URL",
+        "Products are fetched from backend Products collection",
+        "Page handles loading and error states"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Products.tsx",
+          "operation": "modify",
+          "description": "Implement products page to fetch all products using backend.getAllProducts() method. Display each product with title, price, currency, and sourceUrl. Include loading spinner during fetch and error message display on failure. Format price with currency symbol."
+        },
+        {
+          "path": "frontend/src/components/ProductCard.tsx",
+          "operation": "create",
+          "description": "Create reusable ProductCard component to display individual product information: title, formatted price with currency, and clickable source URL. Use shadcn/ui Card component for consistent styling."
+        },
+        {
+          "path": "frontend/src/hooks/useProducts.ts",
+          "operation": "create",
+          "description": "Create custom hook to fetch products from backend using getAllProducts() method. Handle loading, error, and data states. Return products array, loading boolean, and error object."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Build services page that fetches and displays all services from the Services collection with id, title, sourceUrl, price, and currency",
+      "acceptanceCriteria": [
+        "/services route renders a list of all services",
+        "Each service displays title, price with currency, and source URL",
+        "Services are fetched from backend Services collection",
+        "Page handles loading and error states"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Services.tsx",
+          "operation": "modify",
+          "description": "Implement services page to fetch all services using backend.getAllServices() method. Display each service with title, price, currency, and sourceUrl. Include loading spinner during fetch and error message display on failure. Format price with currency symbol."
+        },
+        {
+          "path": "frontend/src/components/ServiceCard.tsx",
+          "operation": "create",
+          "description": "Create reusable ServiceCard component to display individual service information: title, formatted price with currency, and clickable source URL. Use shadcn/ui Card component for consistent styling."
+        },
+        {
+          "path": "frontend/src/hooks/useServices.ts",
+          "operation": "create",
+          "description": "Create custom hook to fetch services from backend using getAllServices() method. Handle loading, error, and data states. Return services array, loading boolean, and error object."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Implement contact page that reads version-controlled contact information from backend and displays an iframe placeholder for e-contract-lwf.caffeine.xyz with stubbed CORS validation",
+      "acceptanceCriteria": [
+        "Backend stores version-controlled contact information (email, phone, address, etc.)",
+        "/contact page fetches and displays contact information",
+        "Page includes iframe with src pointing to e-contract-lwf.caffeine.xyz",
+        "CORS validation logic exists as stub/placeholder with TODO comment for real implementation",
+        "Contact info updates are versioned (simple version counter or timestamp)"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Contact.tsx",
+          "operation": "modify",
+          "description": "Implement contact page to fetch contact information using backend.getContactInfo() method. Display version-controlled contact details (email, address, phone, etc.). Add iframe with src='https://e-contract-lwf.caffeine.xyz' and include TODO comment: 'TODO: Implement real CORS validation for iframe security in Stage 2'. Include loading and error states for contact info fetch."
+        },
+        {
+          "path": "frontend/src/hooks/useContactInfo.ts",
+          "operation": "create",
+          "description": "Create custom hook to fetch contact information from backend using getContactInfo() method. Handle loading, error, and data states. Return contact info tuple (content and version), loading boolean, and error object."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Create sitemap page that dynamically generates sitemap from a pages array containing path, priority, and roleAccess fields for all application routes",
+      "acceptanceCriteria": [
+        "Backend maintains pages array with entries for /, /contact, /sitemap, /products, /services including path, priority (0.0-1.0), and roleAccess (e.g., public, client, admin)",
+        "/sitemap route renders human-readable page listing all routes with their metadata",
+        "/sitemap.xml route generates valid XML sitemap from pages array",
+        "Sitemap includes lastmod, priority, and changefreq fields",
+        "Pages array is easily extensible for future routes"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Sitemap.tsx",
+          "operation": "modify",
+          "description": "Implement sitemap page to fetch sitemap data using backend.getSitemap() method which returns array of [path, priority, roleAccess]. Display human-readable table or list showing all routes with their path, priority (0.0-1.0), and access level (public/client/admin). Include loading and error states. Add note about /sitemap.xml availability for search engines."
+        },
+        {
+          "path": "frontend/src/hooks/useSitemap.ts",
+          "operation": "create",
+          "description": "Create custom hook to fetch sitemap data from backend using getSitemap() method. Handle loading, error, and data states. Parse tuple array into structured sitemap entries. Return sitemap array, loading boolean, and error object."
+        }
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "summary": "Create stubbed QRC onboarding flow function that generates clientId from unixTimestamp + mobile10 with QR code generation placeholder and session storage logic (Stage 2 stub with TODO comments)",
+      "acceptanceCriteria": [
+        "Backend function signature exists: generateClientQRC(mobile10: Text) that validates 10-digit mobile number",
+        "Function logic concatenates current unix timestamp + mobile10 to create clientId",
+        "QR code generation is stubbed with TODO comment referencing future QR library integration",
+        "Frontend stub component exists for onboarding flow with mobile input form",
+        "Session/local storage logic is stubbed to store clientId",
+        "Clear TODO comments mark incomplete Stage 2 implementation"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/QRCOnboarding.tsx",
+          "operation": "create",
+          "description": "Create stubbed QRC onboarding component with mobile number input form (10-digit validation). Call backend.generateClientId(mobile10, unixTimestamp) to generate clientId. Include placeholder div with TODO comment: 'TODO: Integrate QR code generation library (e.g., qrcode.react) to display QR code for clientId in Stage 2'. Store clientId in sessionStorage with TODO comment: 'TODO: Implement persistent local storage strategy in Stage 2'. Display generated clientId to user."
+        },
+        {
+          "path": "frontend/src/pages/Onboarding.tsx",
+          "operation": "create",
+          "description": "Create onboarding page that renders QRCOnboarding component. Include header explaining the client registration process and TODO comment: 'TODO: Add QR code scanning instructions and session management UI in Stage 2'."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add /onboarding route to application router that renders the Onboarding page component. Update navigation in Layout component to include Onboarding link (optional, based on user flow requirements)."
+        }
+      ]
+    }
+  ]
+}

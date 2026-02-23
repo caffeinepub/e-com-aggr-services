@@ -1,0 +1,120 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-create-application-shell-with-routing-for-five-pages-home-contact-sitemap-products-services",
+      "featureTitle": "Create application shell with routing for five pages: / (home), /contact, /sitemap, /products, /services",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/Layout.tsx",
+        "frontend/src/pages/Contact.tsx",
+        "frontend/src/pages/Home.tsx",
+        "frontend/src/pages/Products.tsx",
+        "frontend/src/pages/Services.tsx",
+        "frontend/src/pages/Sitemap.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-build-products-page-that-fetches-and-displays-all-products-from-the-products-collection-with-id-title-sourceurl-price-and-currency",
+      "featureTitle": "Build /products page that fetches and displays all products from the Products collection with id, title, sourceUrl, price, and currency",
+      "files": [
+        "frontend/src/pages/Products.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-build-services-page-that-fetches-and-displays-all-services-from-the-services-collection-with-id-title-sourceurl-price-and-currency",
+      "featureTitle": "Build /services page that fetches and displays all services from the Services collection with id, title, sourceUrl, price, and currency",
+      "files": [
+        "frontend/src/pages/Services.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-6"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-contact-page-that-reads-version-controlled-contact-information-from-a-backend-config-or-table-and-displays-an-iframe-placeholder-for-e-contract-lwf-caffeine-xyz-with-stubbed-cors-validation",
+      "featureTitle": "Implement /contact page that reads version-controlled contact information from a backend config or table and displays an iframe placeholder for e-contract-lwf.caffeine.xyz with stubbed CORS validation",
+      "files": [
+        "frontend/src/pages/Contact.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-7"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-sitemap-page-and-sitemap-xml-route-that-dynamically-generates-sitemap-from-a-pages-array-containing-path-priority-and-roleaccess-fields-for-all-application-routes",
+      "featureTitle": "Create /sitemap page and sitemap.xml route that dynamically generates sitemap from a pages array containing path, priority, and roleAccess fields for all application routes",
+      "files": [
+        "frontend/src/pages/Sitemap.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-8"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-stubbed-qrc-onboarding-flow-function-that-generates-clientid-from-unixtimestamp-mobile10-with-qr-code-generation-placeholder-and-session-storage-logic-stage-2-stub-with-todo-comments",
+      "featureTitle": "Create stubbed QRC onboarding flow function that generates clientId from unixTimestamp + mobile10 with QR code generation placeholder and session storage logic (Stage 2 stub with TODO comments)",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/pages/Onboarding.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-9"
+      ],
+      "confidence": "high"
+    }
+  ]
+}
